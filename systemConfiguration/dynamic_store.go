@@ -50,7 +50,9 @@ func DynamicStoreCreate(name string, callback DynamicStoreCallBack, context inte
 	store.context = context
 	store.callback = callback
 
-	cfContext := C.CreateContext(unsafe.Pointer(store))
+	maskedPointer := uintptr(unsafe.Pointer(store))
+
+	cfContext := C.CreateContext(unsafe.Pointer(&maskedPointer))
 	cfName, _ := ToCFString(name)
 
 	store.ref = C.SCDynamicStoreCreate(0, (C.CFStringRef)(cfName), (*[0]byte)(C.goDynamicStoreCallback), cfContext)

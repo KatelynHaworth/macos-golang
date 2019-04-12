@@ -16,5 +16,12 @@ import (
 //export goDynamicStoreCallback
 func goDynamicStoreCallback(_ C.SCDynamicStoreRef, changedKeys C.CFArrayRef, context unsafe.Pointer) {
 	array, _ := FromCFArray((ArrayRef)(changedKeys))
-	(*DynamicStore)(context).callback((*DynamicStore)(context), array, (*DynamicStore)(context).context)
+
+	maskedPointer := *(*uintptr)(context)
+	store := (*DynamicStore)(unsafe.Pointer(maskedPointer))
+	if store == nil {
+		return
+	}
+
+	store.callback(store, array, store.context)
 }
