@@ -19,7 +19,7 @@ func goDynamicStoreCallback(_ C.SCDynamicStoreRef, changedKeys C.CFArrayRef, con
 
 	maskedPointer := *(*uintptr)(context)
 	store := (*DynamicStore)(unsafe.Pointer(maskedPointer))
-	if store == nil {
+	if store == nil || store.callback == nil {
 		return
 	}
 
