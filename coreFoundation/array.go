@@ -12,7 +12,16 @@ import (
 	"github.com/pkg/errors"
 )
 
+// ArrayRef is a Core Foundation pointer
+// to an array type
 type ArrayRef C.CFArrayRef
+
+// native casts the array reference from a
+// Golang type to the native C type for use
+// in method calls
+func (ref ArrayRef) native() C.CFArrayRef {
+	return (C.CFArrayRef)(ref)
+}
 
 // FromCFArray will convert a Core
 // Foundation Array reference to a
@@ -44,7 +53,7 @@ func FromCFArray(ref ArrayRef) ([]interface{}, error) {
 	return array, nil
 }
 
-// ToCFArray will a new Core Foundation
+// ToCFArray will create a new Core Foundation
 // Array reference from a Golang slice,
 // each element of the slice is converted
 // to it's respective CF type.

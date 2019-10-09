@@ -6,17 +6,44 @@ package coreFoundation
 */
 import "C"
 import (
+	"net/url"
 	"reflect"
 
 	"github.com/pkg/errors"
 )
 
+var (
+	// urlPointerType represents the Golang type
+	// for a url.URL structure pointer
+	urlPointerType = reflect.TypeOf((*url.URL)(nil))
+)
+
+// TypeRef is a Core Foundation
+// generic value pointer
 type TypeRef C.CFTypeRef
 
+// Release will instruct the kernel
+// to release all memory resources
+// allocated for the provided reference.
+//
+// If the reference is equal to 0 then
+// release is not called to prevent
+// crashing the thread.
 func Release(ref TypeRef) {
+	if ref == 0 {
+		return
+	}
+
 	C.CFRelease((C.CFTypeRef)(ref))
 }
 
+// FromCFTypeRef uses reflection provided by
+// the Core Foundation library to identify the
+// type of information represented by the reference.
+//
+// If the information type is supported by this library,
+// the appropriate conversion method is called to convert
+// the reference to a Golang type.
 func FromCFTypeRef(ref TypeRef) (interface{}, error) {
 	switch C.CFGetTypeID((C.CFTypeRef)(ref)) {
 	case C.CFStringGetTypeID():
@@ -37,13 +64,21 @@ func FromCFTypeRef(ref TypeRef) (interface{}, error) {
 	case C.CFDictionaryGetTypeID():
 		return FromCFDictionary((DictionaryRef)(ref))
 
+	case C.CFURLGetTypeID():
+		return FromCFURL((URLRef)(ref))
+
 	default:
 		return nil, errors.New("unsupported CoreFoundation type")
 	}
 }
 
+// ToCFTypeRef will use reflection to identify the
+// data type provided, based on the type provided it
+// will call the appropriate conversion method to convert
+// the data to a Core Foundation type reference.
 func ToCFTypeRef(v interface{}) (TypeRef, error) {
-	switch reflect.TypeOf(v).Kind() {
+	valueType := reflect.TypeOf(v)
+	switch valueType.Kind() {
 	case reflect.String:
 		ref, err := ToCFString(v.(string))
 		if err != nil {
@@ -85,6 +120,17 @@ func ToCFTypeRef(v interface{}) (TypeRef, error) {
 		ref, err := ToCFDictionary(v)
 		if err != nil {
 			return 0, errors.Wrap(err, "convert map to CoreFoundation type")
+		}
+		return (TypeRef)(ref), nil
+
+	case reflect.Struct:
+		if !valueType.AssignableTo(urlPointerType) {
+			return 0, errors.New("unsupported Golang type")
+		}
+
+		ref, err := ToCFURL(v.(*url.URL))
+		if err != nil {
+			return 0, errors.Wrap(err, "convert URL to CoreFoundation type")
 		}
 		return (TypeRef)(ref), nil
 
