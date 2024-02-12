@@ -64,8 +64,8 @@ func ToCFDictionary(dictionary interface{}) (DictionaryRef, error) {
 			return 0, errors.Wrap(err, "convert value for CFDictionaryRef")
 		}
 
-		keys[i] = key
-		values[i] = value
+		keys = append(keys, key)
+		values = append(values, value)
 	}
 
 	return (DictionaryRef)(C.CFDictionaryCreate(
