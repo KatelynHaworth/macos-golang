@@ -6,10 +6,10 @@ package coreFoundation
 */
 import "C"
 import (
+	"errors"
+	"fmt"
 	"net/url"
 	"reflect"
-
-	"github.com/pkg/errors"
 )
 
 var (
@@ -82,14 +82,14 @@ func ToCFTypeRef(v interface{}) (TypeRef, error) {
 	case reflect.String:
 		ref, err := ToCFString(v.(string))
 		if err != nil {
-			return 0, errors.Wrap(err, "convert string to CoreFoundation type")
+			return 0, fmt.Errorf("convert string to CoreFoundation type: %w", err)
 		}
 		return (TypeRef)(ref), nil
 
 	case reflect.Bool:
 		ref, err := ToCFBoolean(v.(bool))
 		if err != nil {
-			return 0, errors.Wrap(err, "convert bool to CoreFoundation type")
+			return 0, fmt.Errorf("convert bool to CoreFoundation type: %w", err)
 		}
 		return (TypeRef)(ref), nil
 
@@ -97,7 +97,7 @@ func ToCFTypeRef(v interface{}) (TypeRef, error) {
 		reflect.Float32, reflect.Float64, reflect.Uint8:
 		ref, err := ToCFNumber(v)
 		if err != nil {
-			return 0, errors.Wrap(err, "convert number to CoreFoundation type")
+			return 0, fmt.Errorf("convert number to CoreFoundation type: %w", err)
 		}
 		return (TypeRef)(ref), nil
 
@@ -105,13 +105,13 @@ func ToCFTypeRef(v interface{}) (TypeRef, error) {
 		if b, ok := v.([]byte); ok {
 			ref, err := ToCFData(b)
 			if err != nil {
-				return 0, errors.Wrap(err, "convert byte slice to CoreFoundation type")
+				return 0, fmt.Errorf("convert byte slice to CoreFoundation type: %w", err)
 			}
 			return (TypeRef)(ref), nil
 		} else {
 			ref, err := ToCFArray(v)
 			if err != nil {
-				return 0, errors.Wrap(err, "convert slice to CoreFoundation type")
+				return 0, fmt.Errorf("convert slice to CoreFoundation type: %w", err)
 			}
 			return (TypeRef)(ref), nil
 		}
@@ -119,7 +119,7 @@ func ToCFTypeRef(v interface{}) (TypeRef, error) {
 	case reflect.Map:
 		ref, err := ToCFDictionary(v)
 		if err != nil {
-			return 0, errors.Wrap(err, "convert map to CoreFoundation type")
+			return 0, fmt.Errorf("convert map to CoreFoundation type: %w", err)
 		}
 		return (TypeRef)(ref), nil
 
@@ -130,7 +130,7 @@ func ToCFTypeRef(v interface{}) (TypeRef, error) {
 
 		ref, err := ToCFURL(v.(*url.URL))
 		if err != nil {
-			return 0, errors.Wrap(err, "convert URL to CoreFoundation type")
+			return 0, fmt.Errorf("convert URL to CoreFoundation type: %w", err)
 		}
 		return (TypeRef)(ref), nil
 

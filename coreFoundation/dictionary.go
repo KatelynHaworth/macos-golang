@@ -6,10 +6,9 @@ package coreFoundation
 */
 import "C"
 import (
+	"fmt"
 	"reflect"
 	"unsafe"
-
-	"github.com/pkg/errors"
 )
 
 type DictionaryRef C.CFDictionaryRef
@@ -34,12 +33,12 @@ func FromCFDictionary(ref DictionaryRef) (map[interface{}]interface{}, error) {
 	for i := 0; i < int(size); i++ {
 		key, err := FromCFTypeRef(keys[i])
 		if err != nil {
-			return nil, errors.Wrap(err, "convert key from CFDictionaryRef")
+			return nil, fmt.Errorf("convert key from CFDictionaryRef: %w", err)
 		}
 
 		value, err := FromCFTypeRef(values[i])
 		if err != nil {
-			return nil, errors.Wrap(err, "convert value from CFDictionRef")
+			return nil, fmt.Errorf("convert value from CFDictionRef: %w", err)
 		}
 
 		dictionary[key] = value
@@ -60,12 +59,12 @@ func ToCFDictionary(dictionary interface{}) (DictionaryRef, error) {
 	for i := range m.MapKeys() {
 		key, err := ToCFTypeRef(m.MapKeys()[i].Interface())
 		if err != nil {
-			return 0, errors.Wrap(err, "convert key for CFDictionaryRef")
+			return 0, fmt.Errorf("convert key for CFDictionaryRef: %w", err)
 		}
 
 		value, err := ToCFTypeRef(m.MapIndex(m.MapKeys()[i]).Interface())
 		if err != nil {
-			return 0, errors.Wrap(err, "convert value for CFDictionaryRef")
+			return 0, fmt.Errorf("convert value for CFDictionaryRef: %w", err)
 		}
 
 		keys = append(keys, key)

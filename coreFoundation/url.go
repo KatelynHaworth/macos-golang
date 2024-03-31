@@ -6,7 +6,7 @@ package coreFoundation
 */
 import "C"
 import (
-	"github.com/pkg/errors"
+	"fmt"
 	"net/url"
 )
 
@@ -27,7 +27,7 @@ func FromCFURL(ref URLRef) (*url.URL, error) {
 	urlValue, _ := FromCFString(stringRef)
 	parsed, err := url.Parse(urlValue)
 	if err != nil {
-		return nil, errors.Wrap(err, "parse URL value")
+		return nil, fmt.Errorf("parse URL value: %w", err)
 	}
 
 	return parsed, nil

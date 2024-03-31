@@ -20,11 +20,12 @@ static SCDynamicStoreContext * CreateContext(void *info) {
 */
 import "C"
 import (
+	"errors"
+	"fmt"
 	"runtime"
 	"unsafe"
 
 	. "github.com/LiamHaworth/macos-golang/coreFoundation"
-	"github.com/pkg/errors"
 )
 
 // DynamicStoreCallBack is a function invoked
@@ -67,12 +68,12 @@ func DynamicStoreCreate(name string, callback DynamicStoreCallBack, context inte
 func (store *DynamicStore) SetNotificationKeys(keys, patterns []string) (err error) {
 	cfKeys, err := ToCFArray(keys)
 	if err != nil {
-		return errors.Wrap(err, "convert keys array")
+		return fmt.Errorf("convert keys array: %w", err)
 	}
 
 	cfPatterns, err := ToCFArray(patterns)
 	if err != nil {
-		return errors.Wrap(err, "convert patterns array")
+		return fmt.Errorf("convert patterns array: %w", err)
 	}
 
 	success := C.SCDynamicStoreSetNotificationKeys(store.ref, (C.CFArrayRef)(cfKeys), (C.CFArrayRef)(cfPatterns))
