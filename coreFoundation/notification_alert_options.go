@@ -7,15 +7,15 @@ import (
 )
 
 type NotificationAlertOptions struct {
-	Timeout time.Duration
-	Level NotificationAlertLevel // TODO(lh): Use concrete type
-	Icon *url.URL
-	Localization *url.URL
-	AlertHeader string
-	AlertMessage string
-	DefaultButtonTitle string
+	Timeout              time.Duration
+	Level                NotificationAlertLevel
+	Icon                 *url.URL
+	Localization         *url.URL
+	AlertHeader          string
+	AlertMessage         string
+	DefaultButtonTitle   string
 	AlternateButtonTitle string
-	OtherButtonTitle string
+	OtherButtonTitle     string
 }
 
 func (options NotificationAlertOptions) timeout() C.double {

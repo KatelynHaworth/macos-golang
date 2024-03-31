@@ -24,6 +24,10 @@ func (ref BooleanRef) native() C.CFBooleanRef {
 // this function and must be done by
 // the caller.
 func FromCFBoolean(ref BooleanRef) (bool, error) {
+	if ref == 0 {
+		return false, nil
+	}
+
 	return C.CFBooleanGetValue(ref.native()) != 0, nil
 }
 
