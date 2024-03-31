@@ -17,6 +17,10 @@ func (ref URLRef) native() C.CFURLRef {
 }
 
 func FromCFURL(ref URLRef) (*url.URL, error) {
+	if ref == 0 {
+		return nil, nil
+	}
+
 	stringRef := (StringRef)(C.CFURLGetString(ref.native()))
 	defer Release((TypeRef)(stringRef))
 

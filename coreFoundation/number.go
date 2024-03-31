@@ -17,6 +17,10 @@ func (ref NumberRef) native() C.CFNumberRef {
 }
 
 func FromCFNumber(ref NumberRef) (interface{}, error) {
+	if ref == 0 {
+		return 0, nil
+	}
+
 	typ := C.CFNumberGetType(ref.native())
 
 	switch typ {

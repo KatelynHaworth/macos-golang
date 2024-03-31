@@ -35,6 +35,10 @@ func (ref ArrayRef) native() C.CFArrayRef {
 // this function and must be done by
 // the caller.
 func FromCFArray(ref ArrayRef) ([]interface{}, error) {
+	if ref == 0 {
+		return []interface{}{}, nil
+	}
+
 	size := C.CFArrayGetCount((C.CFArrayRef)(ref))
 	elements := make([]TypeRef, size)
 

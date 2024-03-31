@@ -34,6 +34,10 @@ func (ref StringRef) native() C.CFStringRef {
 // this function and will need to be
 // done by the caller.
 func FromCFString(ref StringRef) (s string, _ error) {
+	if ref == 0 {
+		return "", nil
+	}
+
 	/*
 		Check if the CFStringRef is a plain C
 		string pointer, if so just convert directly

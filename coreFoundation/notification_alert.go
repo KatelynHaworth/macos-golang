@@ -6,11 +6,12 @@ package coreFoundation
 */
 import "C"
 import (
-	"github.com/pkg/errors"
 	"unsafe"
+
+	"github.com/pkg/errors"
 )
 
-func UserNotificationDisplayAlert(options NotificationAlertOptions) (response uint64, _ error){
+func UserNotificationDisplayAlert(options NotificationAlertOptions) (response uint64, _ error) {
 	icon, err := options.iconURL()
 	if err != nil {
 		return 0, errors.Wrap(err, "convert icon URL to native")

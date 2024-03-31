@@ -31,6 +31,10 @@ func (ref DataRef) native() C.CFDataRef {
 // this function and must be done by
 // the caller.
 func FromCFData(ref DataRef) ([]byte, error) {
+	if ref == 0 {
+		return []byte{}, nil
+	}
+
 	size := C.CFDataGetLength(ref.native())
 	data := make([]byte, size)
 

@@ -19,6 +19,10 @@ func (ref DictionaryRef) native() C.CFDictionaryRef {
 }
 
 func FromCFDictionary(ref DictionaryRef) (map[interface{}]interface{}, error) {
+	if ref == 0 {
+		return map[interface{}]interface{}{}, nil
+	}
+
 	size := C.CFDictionaryGetCount(ref.native())
 
 	dictionary := make(map[interface{}]interface{}, 0)
