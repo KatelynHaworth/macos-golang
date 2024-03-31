@@ -6,10 +6,9 @@ package coreFoundation
 */
 import "C"
 import (
+	"errors"
 	"reflect"
 	"unsafe"
-
-	"github.com/pkg/errors"
 )
 
 type StringRef C.CFStringRef

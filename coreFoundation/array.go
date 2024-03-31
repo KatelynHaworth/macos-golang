@@ -6,10 +6,9 @@ package coreFoundation
 */
 import "C"
 import (
+	"fmt"
 	"reflect"
 	"unsafe"
-
-	"github.com/pkg/errors"
 )
 
 // ArrayRef is a Core Foundation pointer
@@ -48,7 +47,7 @@ func FromCFArray(ref ArrayRef) ([]interface{}, error) {
 	for i := range elements {
 		element, err := FromCFTypeRef(elements[i])
 		if err != nil {
-			return nil, errors.Wrap(err, "convert from CFArrayRef element")
+			return nil, fmt.Errorf("convert from CFArrayRef element: %w", err)
 		}
 
 		array[i] = element
@@ -74,7 +73,7 @@ func ToCFArray(v interface{}) (ArrayRef, error) {
 	for i := 0; i < s.Len(); i++ {
 		value, err := ToCFTypeRef(s.Index(i).Interface())
 		if err != nil {
-			return 0, errors.Wrap(err, "convert to CFArrayRef element")
+			return 0, fmt.Errorf("convert to CFArrayRef element: %w", err)
 		}
 
 		values[i] = value
