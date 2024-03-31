@@ -14,9 +14,16 @@ import (
 )
 
 func DynamicStoreCopyComputerName(store *DynamicStore) string {
-	var encoding uint8
+	var (
+		ref      C.SCDynamicStoreRef
+		encoding uint8
+	)
 
-	value := C.SCDynamicStoreCopyComputerName(store.ref, (*C.uint)(unsafe.Pointer(&encoding)))
+	if store != nil {
+		ref = store.ref
+	}
+
+	value := C.SCDynamicStoreCopyComputerName(ref, (*C.uint)(unsafe.Pointer(&encoding)))
 	defer Release((TypeRef)(value))
 
 	s, _ := FromCFString((StringRef)(value))
@@ -24,9 +31,16 @@ func DynamicStoreCopyComputerName(store *DynamicStore) string {
 }
 
 func DynamicStoreCopyConsoleUser(store *DynamicStore) (string, uint, uint) {
-	var uid, gid uint
+	var (
+		ref      C.SCDynamicStoreRef
+		uid, gid uint
+	)
 
-	value := C.SCDynamicStoreCopyConsoleUser(store.ref, (*C.uint)(unsafe.Pointer(&uid)), (*C.uint)(unsafe.Pointer(&gid)))
+	if store != nil {
+		ref = store.ref
+	}
+
+	value := C.SCDynamicStoreCopyConsoleUser(ref, (*C.uint)(unsafe.Pointer(&uid)), (*C.uint)(unsafe.Pointer(&gid)))
 	defer Release((TypeRef)(value))
 
 	s, _ := FromCFString((StringRef)(value))
@@ -34,7 +48,13 @@ func DynamicStoreCopyConsoleUser(store *DynamicStore) (string, uint, uint) {
 }
 
 func DynamicStoreCopyLocalHostName(store *DynamicStore) string {
-	value := C.SCDynamicStoreCopyLocalHostName(store.ref)
+	var ref C.SCDynamicStoreRef
+
+	if store != nil {
+		ref = store.ref
+	}
+
+	value := C.SCDynamicStoreCopyLocalHostName(ref)
 	defer Release((TypeRef)(value))
 
 	s, _ := FromCFString((StringRef)(value))
@@ -42,7 +62,13 @@ func DynamicStoreCopyLocalHostName(store *DynamicStore) string {
 }
 
 func DynamicStoreCopyLocation(store *DynamicStore) string {
-	value := C.SCDynamicStoreCopyLocation(store.ref)
+	var ref C.SCDynamicStoreRef
+
+	if store != nil {
+		ref = store.ref
+	}
+
+	value := C.SCDynamicStoreCopyLocation(ref)
 	defer Release((TypeRef)(value))
 
 	s, _ := FromCFString((StringRef)(value))
