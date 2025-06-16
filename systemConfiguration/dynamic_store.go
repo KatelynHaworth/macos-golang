@@ -23,6 +23,7 @@ import (
 	"errors"
 	"fmt"
 	"runtime"
+	"runtime/cgo"
 	"unsafe"
 
 	. "github.com/LiamHaworth/macos-golang/coreFoundation"
@@ -51,9 +52,9 @@ func DynamicStoreCreate(name string, callback DynamicStoreCallBack, context inte
 	store.context = context
 	store.callback = callback
 
-	maskedPointer := uintptr(unsafe.Pointer(store))
+	handle := cgo.NewHandle(store)
 
-	cfContext := C.CreateContext(unsafe.Pointer(&maskedPointer))
+	cfContext := C.CreateContext(unsafe.Pointer(handle))
 	cfName, _ := ToCFString(name)
 
 	store.ref = C.SCDynamicStoreCreate(0, (C.CFStringRef)(cfName), (*[0]byte)(C.goDynamicStoreCallback), cfContext)
