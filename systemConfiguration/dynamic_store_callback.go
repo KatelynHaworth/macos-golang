@@ -8,6 +8,7 @@ package systemConfiguration
 */
 import "C"
 import (
+	"runtime/cgo"
 	"unsafe"
 
 	. "github.com/LiamHaworth/macos-golang/coreFoundation"
@@ -17,9 +18,9 @@ import (
 func goDynamicStoreCallback(_ C.SCDynamicStoreRef, changedKeys C.CFArrayRef, context unsafe.Pointer) {
 	array, _ := FromCFArray((ArrayRef)(changedKeys))
 
-	maskedPointer := *(*uintptr)(context)
-	store := (*DynamicStore)(unsafe.Pointer(maskedPointer))
-	if store == nil || store.callback == nil {
+	handle := cgo.Handle(context)
+	store, ok := handle.Value().(*DynamicStore)
+	if !ok || store == nil || store.callback == nil {
 		return
 	}
 
